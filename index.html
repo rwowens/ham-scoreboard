@@ -75,7 +75,12 @@ $(document).ready(function() {
 		}
 	});
 	
-	setInterval(function() { table.api().ajax.reload(); }, 60000);
+	setInterval(function() {
+		table.api().ajax.reload(function (json) {
+			// Prevent tooltips from getting stuck when the data reloads
+			$('div.tooltip').tooltip('dispose');
+		});
+	}, 60000);
 });
 </script>
 </body>
