@@ -1,7 +1,7 @@
 <?php
 require('consts.php');
-$auth = $_SERVER['PHP_AUTH_USER'] . ':' . $_SERVER['PHP_AUTH_PW'];
-if (UPLOAD_PASSWORD != $_SERVER['PHP_AUTH_PW']) {
+if (UPLOAD_PASSWORD != trim($_SERVER['PHP_AUTH_PW'])) {
+	http_response_code(401);
 	die('Invalid username or password.');
 }
 
@@ -13,8 +13,8 @@ if ($debug == true) {
 	$xml = simplexml_load_file('php://input') or die('Unable to parse XML');
 }
 
-if ($xml !== false && strcasecmp($xml->call, $_SERVER['PHP_AUTH_USER']) == 0) {
-	$callsign = filter_var($xml->call, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+if ($xml !== false && strcasecmp(trim($xml->call), trim($_SERVER['PHP_AUTH_USER'])) == 0) {
+	$callsign = trim(filter_var($xml->call, FILTER_SANITIZE_FULL_SPECIAL_CHARS));
 	$club = filter_var($xml->club, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$arrlSection = filter_var($xml->qth->arrlsection, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$score = filter_var($xml->score, FILTER_SANITIZE_NUMBER_INT);
