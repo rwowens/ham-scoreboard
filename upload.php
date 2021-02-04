@@ -31,8 +31,8 @@ if ($xml !== false && strcasecmp(trim($xml->call), trim($_SERVER['PHP_AUTH_USER'
 	if (!($callsign && $club && $arrlSection && $contest)) {
 		http_response_code(400);
 		if (!$callsign) echo('Callsign is missing; ');
-		if (!$club) echo('Club name is missing; ');
-		if (!$arrlSection) echo('ARRL Section is missing; ');
+		//if (!$club) echo('Club name is missing; ');
+		//if (!$arrlSection) echo('ARRL Section is missing; ');
 		if (!$contest) echo('Contest value is missing; ');
 		die('Invalid input provided');
 	}
@@ -63,7 +63,7 @@ if ($xml !== false && strcasecmp(trim($xml->call), trim($_SERVER['PHP_AUTH_USER'
 			http_response_code(500);
 		}
 
-		$sql_scores = 'INSERT INTO scores_current (callsign, lst_upd, score, mult, qso, arrl_section, cq_zone, club, mode, bands, ops, xmtrs, power, contest) VALUES (:callsign, :lstUpd, :score, :mult, :qso, :arrlSection, :cqZone, :club, :mode, :bands, :ops, :xmtrs, :power, :contest) ON DUPLICATE KEY UPDATE lst_upd=VALUES(lst_upd), score=VALUES(score), mult=VALUES(mult), qso=VALUES(qso), arrl_section=VALUES(arrl_section), cq_zone=VALUES(cq_zone), club=VALUES(club), mode=VALUES(mode), bands=VALUES(bands), ops=VALUES(ops), xmtrs=VALUES(xmtrs), power=VALUES(power), contest=VALUES(contest)';
+		$sql_scores = 'INSERT INTO scores_current (callsign, lst_upd, score, mult, qso, arrl_section, cq_zone, club, mode, bands, ops, xmtrs, power, contest) VALUES (:callsign, :lstUpd, :score, :mult, :qso, :arrlSection, :cqZone, :club, :mode, :bands, :ops, :xmtrs, :power, :contest) ON DUPLICATE KEY UPDATE lst_upd=VALUES(lst_upd), score=VALUES(score), mult=VALUES(mult), qso=VALUES(qso), arrl_section=VALUES(arrl_section), cq_zone=VALUES(cq_zone), club=VALUES(club), mode=VALUES(mode), bands=VALUES(bands), ops=VALUES(ops), xmtrs=VALUES(xmtrs), power=VALUES(power)';
 		$stmt = $db->prepare($sql_scores);
 		$stmt->bindParam('callsign', $callsign);
 		$stmt->bindParam('lstUpd', $xml->timestamp);

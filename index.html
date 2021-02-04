@@ -15,6 +15,7 @@
 <body>
 <div class="container">
 	<div class="row"><div class="col-12"><div class="h1 text-center">OH-KY-IN Club Scores</div></div></div>
+	<div class="row"><div class="col-12"><div class="h4 text-center">Contest: <select id="contestId"></select></div></div></div>
 
 	<table class="display" id="scoretable" style="width:100%">
 		<thead>
@@ -48,9 +49,24 @@
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 <script>
 $(document).ready(function() {
+	$('#contestId').on('change', function() {
+		triggerTableReload();
+	});
+
+	$.ajax({
+		url: "contestlist.php"
+	}).then(function(data) {
+		data.forEach(function(item, index) { $('#contestId').append(new Option(item, item)); });
+		triggerTableReload();
+	});
 	var table = $('#scoretable').dataTable({
 		"paging": false,
-		"ajax": "scores.php",
+		"ajax": {
+			"url": "scores.php",
+			"data": function(d) {
+				d.evt = $('#contestId').val();
+			}
+		},
 		"drawCallback": function(settings) { $('[data-toggle="tooltip"]').tooltip(); },
 		"columnDefs": [
 			{
@@ -75,12 +91,16 @@ $(document).ready(function() {
 			}
 		}
 	});
-	
-	setInterval(function() {
+
+	function triggerTableReload() {
 		table.api().ajax.reload(function (json) {
 			// Prevent tooltips from getting stuck when the data reloads
 			$('div.tooltip').tooltip('dispose');
 		});
+	}
+	
+	setInterval(function() {
+		triggerTableReload();
 	}, 60000);
 });
 </script>
